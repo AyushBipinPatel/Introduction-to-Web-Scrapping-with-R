@@ -1,0 +1,256 @@
+---
+title: "Introduction to Webs Scrapping"
+author: "Ayush Patel"
+date: "08/03/2020"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 1 The Promise
+
+
+It is intended that by the end of this workshop you will be able to do the following:
+
+  * Use CSS selector[^1] gadget.
+  * Automate Web Browser using Selenium server[^1].
+  * Get information from webpages.
+
+[^1]: Soon we will discuss what is CSS selector gadget and Selenium.
+
+Installing required softare dependencies for webscrapping can be a pain. Howevere, the silver lining is that it has to be done only once. It is a fixed cost one must pay.
+
+
+<iframe src="https://giphy.com/embed/l41lIkTqv4NTHPktO" width="480" height="360" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/laughing-money-seinfeld-l41lIkTqv4NTHPktO">via GIPHY</a></p>
+
+
+## 2 The Essentials
+
+
+Following are the softwares or dpendencies [^2] one must have:
+
+ * The R software. If you dont have it get it [here](https://cran.r-project.org/).
+ * CSS selector Gadget. [Download](https://chrome.google.com/webstore/search/selectorgadget).
+ * The Selenium Binary. Get it from [here](http://selenium-release.storage.googleapis.com/index.html?path=4.0/). **Download the .jar files and execute.** I recommend the selenium server standalone 4.0.0-alpha-1 and selenium server standalone 4.0.0-alpha-1.
+ * If the machine you are using does not have java, get it [here](https://www.java.com/en/download/).
+  * **Dont know if you have java or not?** open you command promt and run the command "java -version". look at the image below.
+  
+  
+  ![Java installed?][imgcmd]
+
+[imgcmd]: D:/R projects/Introduction-to-Web-Scrapping-with-R/cmd java check capture.png
+
+
+**RStudio** is not necessary. But I highly recommend it. This is for two reasons:
+
+  * This will increase your productivity, by a lot.
+  * It will allow easier access to other tools and fuctionalities that you might need in the future. For example, this html document is entirely made in RStudio, Its a markdown document.
+  
+  
+  <iframe src="https://giphy.com/embed/46zGsq0JNimhzfkABV" width="480" height="263" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/smallfootmovie-funny-lol-46zGsq0JNimhzfkABV">via GIPHY</a></p>
+  
+  * If you are convinced, [this](https://rstudio.com/products/rstudio/download/) is where you can get RStudio.
+ 
+
+## 3 The Basics Blocks
+
+
+Following are the three **Fundamental Comncepts**
+
+  * [Selenium Server](https://www.selenium.dev/) and its use
+  * CSS Selector Gadget and how to use it
+  * RSelenium
+  
+  
+![The Three Fundamentals][img3funda]
+
+[img3funda]: D:/R projects/Introduction-to-Web-Scrapping-with-R/concept map_three_fundamentals/Slide1.png
+
+
+### 3.1 Identify Element on webpage using Selector Gadget
+
+
+Open the URL (https://r4ds.had.co.nz/). 
+
+**What is the XPath for the the name picture of the book shown on the website?**
+
+
+## 4 Starting the Selenium Server
+
+
+Before jumping on to starting the server, load the following packages.
+
+```{r libs, echo=TRUE}
+library(tidyverse)
+library(RSelenium)
+```
+
+
+In case you havent installed these packages use the following code to install the packages and then run the above given code.
+
+> install.packages("tidyverse")
+
+> install.packages("RSelenium")
+ 
+Before we move on:
+
+  * Check if your chromeDriver version is any of the following
+    * 78.0.3904.105
+    * 79.0.3945.36
+    * 80.0.3987.106
+    * 80.0.3987.16
+    * 81.0.1011.20
+  If yes, we are good to go. If not download from [here](https://chromedriver.chromium.org/downloads) and execute the application file.
+ 
+Here we go.
+
+```{r startingServer, echo=TRUE}
+
+driver<-rsDriver(browser = "chrome",chromever = "79.0.3945.36") 
+ 
+```
+
+ 
+Running the above command will open a chrome window by magically (automatically). Below is how it looks. Notice the **chrome is being controlled by automated test software** on the chrome window. This means that the commands which we used started the Selenium server which automatically controls the chrome browser.
+ 
+
+![Starting the Server][imgSS]
+
+[imgSS]: D:/R projects/Introduction-to-Web-Scrapping-with-R/Capture start server.png
+
+
+Now **it is imoportant to close the server and stop the process after completing the task.** Below is the code to do the same.
+
+```{r stopserver, echo=TRUE}
+driver$server$stop()
+driver$server$process
+gc()
+```
+
+You have sucessfully started and stoped an automated serever. Now we move on to making it do what we want. 
+
+If you were able to start and stop the server sucessfuly, this means that the system is set. The fixed cost is payed. One does not need to perform the steps outlined in sections 1 to 3 everytime they want to automate a browser. Celebrate!!
+
+<iframe src="https://giphy.com/embed/1lI97corSEnZu" width="480" height="277" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/dancing-party-harry-potter-1lI97corSEnZu">via GIPHY</a></p>
+
+
+But if it did not work out for you, dont worry, relax. Ask me come to your desk and help you.
+
+<iframe src="https://giphy.com/embed/rTapV77tqAWZO" width="480" height="199" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/harry-potter-ron-rTapV77tqAWZO">via GIPHY</a></p>
+
+
+## 5 The Example
+
+
+Here it will be demonstrated how to get a village directory from the census website, from the District Census Handbook, step by step.
+
+**Step1** The URL or the link of the website.
+
+(https://censusindia.gov.in)
+
+**Step2**
+
+Click on the element that is named District Census Handbook.
+
+you will see a list of states and a lot of corresponding buttons to download the village directory.
+
+**Step3**
+
+Click on the relevant button to download the file.
+
+
+These are the three broad steps that are to be followed. Before we do that we have to figure out the XPath of all the elements that we want the automated browser to interact with. We will use Selector Gadget to find the XPath.
+
+
+Element                 | XPath
+------------------------|--------------------------------------------------------------------------------------------
+District Census Handbook|//*[@id="form1"]/table/tbody/tr[3]/td/table/tbody/tr[1]/td[2]/table/tbody/tr[3]/td/center/a
+Download button         |/html/body/form/table/tbody/tr[6]/td[1]/table/tbody/tr[4]/td/table/tbody/tr[4]/td[5]/font/a/img
+
+
+
+
+```{r theExample, echo=TRUE}
+
+## Starting the server
+driver<-rsDriver(browser = "chrome",chromever = "79.0.3945.36") 
+remDr<-driver[["client"]] 
+
+## assigning the link to object url
+url <- "https://censusindia.gov.in"
+
+
+## navigating to the url
+remDr$navigate(url)
+
+
+## Finding the district census handbook element and storing it as an object
+remDr$findElement(using = "xpath",'//*[@id="form1"]/table/tbody/tr[3]/td/table/tbody/tr[1]/td[2]/table/tbody/tr[3]/td/center/a') -> Element_districtcensushandbook
+
+
+## Clicking on the object 
+Element_districtcensushandbook$clickElement()
+
+## Finding the button of the village amenities of Andaman and NIcobar
+remDr$findElement(using = "xpath",
+                  "/html/body/form/table/tbody/tr[6]/td[1]/table/tbody/tr[4]/td/table/tbody/tr[4]/td[5]/font/a/img")->AN_villageAmenities
+
+## Clicking on the element
+AN_villageAmenities$clickElement()
+
+## The excel file is downloaded.
+
+```
+
+
+```{r closingtime, echo=TRUE}
+## Stoping the process and closing the server.
+
+remDr$close() 
+driver$server$stop() 
+driver$server$process 
+rm(driver, remDr, Element_districtcensushandbook,AN_villageAmenities) 
+gc() 
+```
+
+
+## 6 Pop Quiz
+
+**Question1**
+What would you do if multiple elements are selected while trying to identify the desired elements by selector Gadget?
+
+What is the XPath for the XPath of __jobs @ census__  element on the main page of the census website?
+
+  A) //*[contains(concat( " ", @class, " " ), concat( " ", "b2", " " ))]
+  B) /html/body/form/table/tbody/tr[6]/td[1]/table/tbody/tr[4]/td/table/tbody/tr[23]/td[5]/font/a/img
+  C) //*[@id="form1"]/table/tbody/tr[3]/td/table/tbody/tr[1]/td[2]/table/tbody/tr[14]/td/center/a
+  
+**Question2**
+
+ Arrange in order the steps you would take to look at he Reserve Ratios from the main page of the RBI website.Starting at the homepage.
+ 
+  A) Start the Selenium Server
+  B) get XPath of the reserve ratio button
+  C) get the url of the homepage
+  D) Find the element using the XPath
+  E) Navigate to the website
+  F) Close the server
+  G) Remove the objects
+  H) Click on the element
+  
+Are there any more details you can add to these steps?
+
+How will you store the information shown after clicking the element?
+
+## 7 The Authentic Task
+
+Get the abstract of the first post displayed on the home page of the trading economics website (https://tradingeconomics.com), and then open the post. 
+
+Completing this task means you have learned to autmomate a browser, navigate to websites, identify elements and interact with the elements on the webpage. These in essence are the building blocks of webscrapping.
+
+
+
